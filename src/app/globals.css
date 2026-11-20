@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/*
+ * Palette colours come from src/theme/palettes.ts as --brand-* variables on
+ * <html data-palette="…">. Here they become Tailwind colours, so components
+ * write `bg-primary`, `text-on-primary`, `text-muted`, `border-line` and never
+ * a hex value.
+ */
+@theme inline {
+  --color-primary: var(--brand-primary);
+  --color-on-primary: var(--brand-on-primary);
+  --color-accent: var(--brand-accent);
+  --color-on-accent: var(--brand-on-accent);
+  --color-ground: var(--brand-ground);
+  --color-surface: var(--brand-surface);
+  --color-metal: var(--brand-metal);
+  --color-ink: var(--brand-ink);
+  --color-muted: var(--brand-muted);
+  --color-line: var(--brand-line);
+
+  --font-display: var(--font-young-serif), Georgia, serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --font-deva: var(--font-tiro-deva), serif;
+}
+
+html {
+  background-color: var(--brand-ground);
+  color: var(--brand-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
