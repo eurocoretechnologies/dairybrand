@@ -5,8 +5,9 @@ order request (no online payment in v1); the owner confirms each order on
 WhatsApp and tracks it in a private orders dashboard. The full requirements are
 in the PRD.
 
-**Status:** phase 1 (foundation) of 5. The home page is a placeholder that
-proves the palette, fonts and catalogue read work end to end.
+**Status:** phases 1 (foundation) and 2 (storefront) of 5. The order details
+form and order request action arrive in phase 3; `/order` shows the cart until
+then.
 
 ## Stack
 
@@ -25,7 +26,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
-The site runs without Supabase and shows placeholder content. To load real
+The site runs without Supabase. Set `DEMO_CONTENT=true` in `.env.local` to see
+sample products, banners and reviews (the same as `supabase/seed.sql`). To load real
 data, create a Supabase project, apply the migration and seed, and fill in the
 Supabase values in `.env.local`:
 
