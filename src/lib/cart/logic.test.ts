@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   addLine,
+  applyCartChanges,
   itemCount,
   sanitizeLines,
   setQuantity,
@@ -67,5 +68,16 @@ describe("cart logic", () => {
     ];
     expect(sanitizeLines(stored)).toEqual([{ ...ghee, quantity: 2 }]);
     expect(sanitizeLines("nope")).toEqual([]);
+  });
+});
+
+describe("applyCartChanges", () => {
+  it("updates prices and drops unavailable lines", () => {
+    const lines = addLine(addLine([], ghee, 2), milk);
+    const next = applyCartChanges(lines, [
+      { variantId: ghee.variantId, kind: "price", pricePaise: 150000 },
+      { variantId: milk.variantId, kind: "unavailable" },
+    ]);
+    expect(next).toEqual([{ ...ghee, pricePaise: 150000, quantity: 2 }]);
   });
 });

@@ -32,11 +32,20 @@ const serverSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   /** Used when the `settings.palette` row is missing or unreadable. */
   DEFAULT_PALETTE: z.enum(PALETTE_KEYS).optional(),
+  /** Resend API key. Without it, order emails are skipped and logged. */
+  RESEND_API_KEY: z.string().min(1).optional(),
+  /** Sender, e.g. "Ksheera <orders@ksheera.in>". Domain must be verified in Resend. */
+  EMAIL_FROM: z.string().min(3).optional(),
+  /** Secret mixed into hashed client IPs for rate limiting. */
+  IP_HASH_SALT: z.string().min(16).optional(),
 });
 
 export function serverEnv() {
   return serverSchema.parse({
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || undefined,
     DEFAULT_PALETTE: process.env.DEFAULT_PALETTE || undefined,
+    RESEND_API_KEY: process.env.RESEND_API_KEY || undefined,
+    EMAIL_FROM: process.env.EMAIL_FROM || undefined,
+    IP_HASH_SALT: process.env.IP_HASH_SALT || undefined,
   });
 }
