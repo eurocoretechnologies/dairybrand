@@ -1,0 +1,18 @@
+# Supabase CLI settings for local development (`npx supabase start`).
+# Values not listed here use the CLI defaults.
+project_id = "ksheera"
+
+[db]
+major_version = 17
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[auth]
+site_url = "http://localhost:3000"
+# Owners are created by the dev team; visitors never sign up.
+enable_signup = false
+
+[storage]
+file_size_limit = "5MiB"
