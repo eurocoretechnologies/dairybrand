@@ -40,8 +40,13 @@ export function PalettePreview({ livePalette }: { livePalette: PaletteKey }) {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-full border border-line bg-ground py-1 pr-1 pl-4 text-sm text-ink shadow-lg">
-      <label htmlFor="palette-preview">Palette preview</label>
+    <div
+      data-palette-preview
+      className="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-full border border-line bg-ground py-1 pr-1 pl-1 text-sm text-ink shadow-lg sm:pl-4"
+    >
+      <label htmlFor="palette-preview" className="max-sm:sr-only">
+        Palette preview
+      </label>
       <select
         id="palette-preview"
         value={palette}
