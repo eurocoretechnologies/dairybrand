@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui";
-import { OrderSummary } from "./order-summary";
+import { OrderForm } from "./order-form";
 
 export const metadata: Metadata = {
   title: "Place your order",
   robots: { index: false },
 };
 
-/**
- * Phase 2: shows the cart. The details form (contact, address, slot) and the
- * order request action arrive in phase 3.
- */
 export default function OrderPage() {
   return (
     <Container className="py-[clamp(36px,5vw,64px)]">
@@ -21,7 +17,7 @@ export default function OrderPage() {
         No payment now. Share your details and we&apos;ll confirm on WhatsApp with the delivery date
         and payment options.
       </p>
-      <OrderSummary />
+      <OrderForm />
     </Container>
   );
 }

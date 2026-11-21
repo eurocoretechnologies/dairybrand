@@ -5,9 +5,8 @@ order request (no online payment in v1); the owner confirms each order on
 WhatsApp and tracks it in a private orders dashboard. The full requirements are
 in the PRD.
 
-**Status:** phases 1 (foundation) and 2 (storefront) of 5. The order details
-form and order request action arrive in phase 3; `/order` shows the cart until
-then.
+**Status:** phases 1–3 of 5 (foundation, storefront, order flow). The owner
+dashboard (phase 4) is next. Owner setup tasks are in [`todo.md`](todo.md).
 
 ## Stack
 
@@ -92,6 +91,25 @@ update auth.users
 set raw_app_meta_data = raw_app_meta_data || '{"role":"owner"}'
 where email = 'owner@example.com';
 ```
+
+## Order requests
+
+`/order` collects products, contact details, address and a delivery slot. The
+`placeOrder` server action:
+
+1. Validates with the shared Zod schema (`src/lib/order/schema.ts`).
+2. Compares the prices the customer saw with the database; if any changed or
+   went out of stock, it returns the changes, the cart updates and the customer
+   sends again.
+3. Calls `place_order` in Postgres, which re-prices from the database, merges
+   repeated items, returns the existing reference for an identical request
+   within 10 minutes, limits 5 orders per phone and 10 per IP per hour, and
+   saves the order and items in one transaction.
+4. After responding, emails the owner (`settings.owner_email`) and, if given,
+   the customer, through Resend. Email failures never affect the order.
+
+Without Supabase, `DEMO_CONTENT=true` accepts orders without saving them and
+returns the reference `KS-DEMO`.
 
 ## Refreshing cached content
 

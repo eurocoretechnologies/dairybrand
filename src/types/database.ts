@@ -128,6 +128,10 @@ export type OrderRow = {
   owner_note: string | null;
   consent_at: string;
   source: string;
+  /** Variant and quantity signature, for duplicate detection. */
+  request_fingerprint: string | null;
+  /** Salted hash of the client IP, for rate limiting. */
+  ip_hash: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -243,6 +247,8 @@ export type Database = {
           | "cancel_reason"
           | "owner_note"
           | "source"
+          | "request_fingerprint"
+          | "ip_hash"
           | "created_at"
           | "updated_at"
         >
@@ -256,6 +262,10 @@ export type Database = {
     Views: Record<string, never>;
     Functions: {
       is_owner: { Args: Record<string, never>; Returns: boolean };
+      place_order: {
+        Args: { p_customer: Json; p_items: Json; p_ip_hash: string | null };
+        Returns: { order_id: string; reference: string; is_duplicate: boolean }[];
+      };
     };
     Enums: {
       product_category: ProductCategory;
