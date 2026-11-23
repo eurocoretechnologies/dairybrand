@@ -5,8 +5,9 @@ order request (no online payment in v1); the owner confirms each order on
 WhatsApp and tracks it in a private orders dashboard. The full requirements are
 in the PRD.
 
-**Status:** phases 1–3 of 5 (foundation, storefront, order flow). The owner
-dashboard (phase 4) is next. Owner setup tasks are in [`todo.md`](todo.md).
+**Status:** phases 1–4 of 5 (foundation, storefront, order flow, owner
+dashboard). Phase 5 is QA and launch. Owner setup tasks are in
+[`todo.md`](todo.md).
 
 ## Stack
 
@@ -110,6 +111,29 @@ where email = 'owner@example.com';
 
 Without Supabase, `DEMO_CONTENT=true` accepts orders without saving them and
 returns the reference `KS-DEMO`.
+
+## Owner dashboard
+
+`/admin` (sign in at `/admin/login`) is for the owner only. It shows:
+
+- **Summary cards:** new requests and orders to deliver (right now), plus order
+  value and unpaid amount for the chosen period.
+- **The orders list:** status tabs with counts, and search by name, phone or
+  reference. Date filters (today, 7 days, 30 days, all, custom) use India time.
+  The list pages 25 at a time and becomes cards on phones.
+- **Order details:** customer, address, items, a WhatsApp button with a
+  pre-filled confirmation, status changes (cancel needs a reason), payment
+  (UPI, cash, other), a private note, and the activity log.
+- **Live updates:** new orders appear while the dashboard is open, with a chime.
+- **CSV export** of the current filters.
+
+Access is checked three times: `src/proxy.ts` redirects non-owners, each page and
+action calls `requireOwner()`, and row-level security plus column grants in the
+database decide what can actually be read or changed. The owner cannot see or
+edit products, prices or settings.
+
+With `DEMO_CONTENT=true` and no Supabase, `/admin` opens without sign-in on 34
+sample orders kept in memory (local development only).
 
 ## Refreshing cached content
 

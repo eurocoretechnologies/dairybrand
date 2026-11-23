@@ -1,9 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Tiro_Devanagari_Hindi, Young_Serif } from "next/font/google";
-import { CartDrawer } from "@/components/cart/cart-drawer";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
-import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { PalettePreview } from "@/components/palette-preview";
 import { BRAND } from "@/content/site";
 import { getPublicSettings } from "@/lib/data/settings";
@@ -66,13 +62,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <style>{paletteCss()}</style>
       </head>
       <body className="flex min-h-full flex-col bg-ground text-ink">
-        <SiteHeader announcement={settings.announcement} />
-        <main id="main" className="flex flex-1 flex-col">
-          {children}
-        </main>
-        <SiteFooter settings={settings} />
-        <CartDrawer />
-        {settings.whatsappNumber && <WhatsAppFab number={settings.whatsappNumber} />}
+        {children}
         {publicEnv.NEXT_PUBLIC_ALLOW_PALETTE_PREVIEW && (
           <PalettePreview livePalette={settings.palette} />
         )}

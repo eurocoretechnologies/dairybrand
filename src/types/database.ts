@@ -262,6 +262,21 @@ export type Database = {
     Views: Record<string, never>;
     Functions: {
       is_owner: { Args: Record<string, never>; Returns: boolean };
+      order_stats: {
+        Args: { p_from: string | null; p_to: string | null; p_search: string | null };
+        Returns: Json;
+      };
+      list_orders: {
+        Args: {
+          p_from: string | null;
+          p_to: string | null;
+          p_search: string | null;
+          p_status: OrderStatus | null;
+          p_limit: number;
+          p_offset: number;
+        };
+        Returns: OrderRow[];
+      };
       place_order: {
         Args: { p_customer: Json; p_items: Json; p_ip_hash: string | null };
         Returns: { order_id: string; reference: string; is_duplicate: boolean }[];

@@ -61,7 +61,9 @@ async function loadOrder(orderId: string) {
     email: order.email,
     address: [
       order.address_line1,
-      [order.address_line2, order.landmark && `near ${order.landmark}`].filter(Boolean).join(", "),
+      [order.address_line2, order.landmark && `landmark: ${order.landmark}`]
+        .filter(Boolean)
+        .join(", "),
       `${order.city} ${order.pincode}, ${order.state}`,
     ],
     pincodeServiceable: order.pincode_serviceable,
