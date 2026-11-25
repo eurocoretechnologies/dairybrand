@@ -13,6 +13,8 @@ describe("toPublicSettings", () => {
         { key: "announcement", value: "Hello" },
         { key: "whatsapp_number", value: "919800000000" },
         { key: "batch", value: { number: "014", churned_on: "2026-11-18" } },
+        { key: "contact", value: { phone: "+91 98000 00000", email: "hi@example.com" } },
+        { key: "fssai_licence", value: "12345678901234" },
       ],
       undefined,
     );
@@ -21,6 +23,8 @@ describe("toPublicSettings", () => {
       announcement: "Hello",
       whatsappNumber: "919800000000",
       batch: { number: "014", churnedOn: "2026-11-18" },
+      contact: { phone: "+91 98000 00000", email: "hi@example.com", address: null },
+      fssaiLicence: "12345678901234",
     });
   });
 
@@ -37,6 +41,7 @@ describe("toPublicSettings", () => {
       [
         { key: "announcement", value: "  " },
         { key: "whatsapp_number", value: 919800000000 },
+        { key: "contact", value: "not an object" },
         { key: "batch", value: ["014"] },
       ],
       undefined,
@@ -44,5 +49,12 @@ describe("toPublicSettings", () => {
     expect(settings.announcement).toBeNull();
     expect(settings.whatsappNumber).toBeNull();
     expect(settings.batch).toEqual({ number: null, churnedOn: null });
+    expect(settings.contact).toEqual({ phone: null, email: null, address: null });
+  });
+
+  it("rejects WhatsApp numbers that are not 10–15 digits", () => {
+    expect(
+      toPublicSettings([{ key: "whatsapp_number", value: "+91 98000" }], undefined).whatsappNumber,
+    ).toBeNull();
   });
 });

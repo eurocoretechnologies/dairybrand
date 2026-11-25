@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Tiro_Devanagari_Hindi, Young_Serif } from "next/font/google";
 import { PalettePreview } from "@/components/palette-preview";
+import { BRAND } from "@/content/site";
 import { getPublicSettings } from "@/lib/data/settings";
 import { publicEnv } from "@/lib/env";
-import { paletteCss } from "@/theme/palettes";
+import { PALETTES, paletteCss } from "@/theme/palettes";
 import "./globals.css";
 
 const youngSerif = Young_Serif({
@@ -23,24 +24,38 @@ const tiroDeva = Tiro_Devanagari_Hindi({
   subsets: ["devanagari", "latin"],
 });
 
+const description =
+  "Hand-churned bilona ghee, fresh A2 milk, paneer and dahi from free-grazing Gir cows. Order online and we confirm on WhatsApp.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.NEXT_PUBLIC_SITE_URL),
   title: {
-    default: "Ksheera — A2 Gir cow ghee and fresh dairy",
-    template: "%s · Ksheera",
+    default: `${BRAND.name} — A2 Gir cow ghee and fresh dairy`,
+    template: `%s · ${BRAND.name}`,
   },
-  description:
-    "Hand-churned bilona ghee, fresh A2 milk, paneer and dahi from free-grazing Gir cows. Order online and we confirm on WhatsApp.",
+  description,
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    siteName: BRAND.name,
+    description,
+  },
+  twitter: { card: "summary_large_image" },
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+export async function generateViewport(): Promise<Viewport> {
   const { palette } = await getPublicSettings();
+  return { themeColor: PALETTES[palette].colors.primary };
+}
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const settings = await getPublicSettings();
 
   return (
     <html
       lang="en-IN"
-      data-palette={palette}
-      className={`${youngSerif.variable} ${manrope.variable} ${tiroDeva.variable} h-full antialiased`}
+      data-palette={settings.palette}
+      className={`${youngSerif.variable} ${manrope.variable} ${tiroDeva.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         {/* All palettes ship together so switching needs no extra request. */}
@@ -48,7 +63,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-full flex-col bg-ground text-ink">
         {children}
-        {publicEnv.NEXT_PUBLIC_ALLOW_PALETTE_PREVIEW && <PalettePreview livePalette={palette} />}
+        {publicEnv.NEXT_PUBLIC_ALLOW_PALETTE_PREVIEW && (
+          <PalettePreview livePalette={settings.palette} />
+        )}
       </body>
     </html>
   );

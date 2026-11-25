@@ -37,6 +37,14 @@ body {
   outline-offset: 2px;
 }
 
+/* Keep the WhatsApp button clear of the product page's pinned actions on phones. */
+@media (max-width: 639px) {
+  body:has([data-mobile-actions]) [data-whatsapp-fab],
+  body:has([data-mobile-actions]) [data-palette-preview] {
+    bottom: 5.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

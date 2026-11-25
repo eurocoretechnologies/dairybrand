@@ -23,4 +23,6 @@ for migration in "$ROOT"/supabase/migrations/*.sql; do
   run "$migration"
 done
 run "$ROOT/supabase/seed.sql"
-run "$ROOT/supabase/tests/rls_test.sql"
+for test in "$ROOT"/supabase/tests/*_test.sql; do
+  run "$test"
+done

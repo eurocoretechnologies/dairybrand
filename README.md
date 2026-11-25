@@ -5,8 +5,9 @@ order request (no online payment in v1); the owner confirms each order on
 WhatsApp and tracks it in a private orders dashboard. The full requirements are
 in the PRD.
 
-**Status:** phase 1 (foundation) of 5. The home page is a placeholder that
-proves the palette, fonts and catalogue read work end to end.
+**Status:** phases 1–4 of 5 (foundation, storefront, order flow, owner
+dashboard). Phase 5 is QA and launch. Owner setup tasks are in
+[`todo.md`](todo.md).
 
 ## Stack
 
@@ -25,7 +26,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
-The site runs without Supabase and shows placeholder content. To load real
+The site runs without Supabase. Set `DEMO_CONTENT=true` in `.env.local` to see
+sample products, banners and reviews (the same as `supabase/seed.sql`). To load real
 data, create a Supabase project, apply the migration and seed, and fill in the
 Supabase values in `.env.local`:
 
@@ -90,6 +92,48 @@ update auth.users
 set raw_app_meta_data = raw_app_meta_data || '{"role":"owner"}'
 where email = 'owner@example.com';
 ```
+
+## Order requests
+
+`/order` collects products, contact details, address and a delivery slot. The
+`placeOrder` server action:
+
+1. Validates with the shared Zod schema (`src/lib/order/schema.ts`).
+2. Compares the prices the customer saw with the database; if any changed or
+   went out of stock, it returns the changes, the cart updates and the customer
+   sends again.
+3. Calls `place_order` in Postgres, which re-prices from the database, merges
+   repeated items, returns the existing reference for an identical request
+   within 10 minutes, limits 5 orders per phone and 10 per IP per hour, and
+   saves the order and items in one transaction.
+4. After responding, emails the owner (`settings.owner_email`) and, if given,
+   the customer, through Resend. Email failures never affect the order.
+
+Without Supabase, `DEMO_CONTENT=true` accepts orders without saving them and
+returns the reference `KS-DEMO`.
+
+## Owner dashboard
+
+`/admin` (sign in at `/admin/login`) is for the owner only. It shows:
+
+- **Summary cards:** new requests and orders to deliver (right now), plus order
+  value and unpaid amount for the chosen period.
+- **The orders list:** status tabs with counts, and search by name, phone or
+  reference. Date filters (today, 7 days, 30 days, all, custom) use India time.
+  The list pages 25 at a time and becomes cards on phones.
+- **Order details:** customer, address, items, a WhatsApp button with a
+  pre-filled confirmation, status changes (cancel needs a reason), payment
+  (UPI, cash, other), a private note, and the activity log.
+- **Live updates:** new orders appear while the dashboard is open, with a chime.
+- **CSV export** of the current filters.
+
+Access is checked three times: `src/proxy.ts` redirects non-owners, each page and
+action calls `requireOwner()`, and row-level security plus column grants in the
+database decide what can actually be read or changed. The owner cannot see or
+edit products, prices or settings.
+
+With `DEMO_CONTENT=true` and no Supabase, `/admin` opens without sign-in on 34
+sample orders kept in memory (local development only).
 
 ## Refreshing cached content
 
