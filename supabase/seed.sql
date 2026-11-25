@@ -64,4 +64,6 @@ insert into public.settings (key, value, is_public) values
 ('announcement', '"Now taking orders — every order is confirmed personally on WhatsApp before dispatch."', true),
 ('whatsapp_number', '"910000000000"', true),
 ('batch', '{"number": "014", "churned_on": null}', true),
+('contact', '{"phone": null, "email": null, "address": null}', true),
+('fssai_licence', 'null', true),
 ('owner_email', '"owner@example.com"', false);
