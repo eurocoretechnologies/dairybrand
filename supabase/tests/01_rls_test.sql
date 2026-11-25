@@ -1,6 +1,6 @@
 -- Access-rule and order-lifecycle tests. Run on a database with
 -- supabase_stubs.sql, the migrations and seed.sql applied:
---   psql -v ON_ERROR_STOP=1 -f supabase/tests/rls_test.sql
+--   psql -v ON_ERROR_STOP=1 -f supabase/tests/01_rls_test.sql
 -- Every check raises an exception on failure, so the script stops at the
 -- first broken rule.
 

@@ -3,7 +3,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { addLine, sanitizeLines, setQuantity, type CartLine } from "./logic";
+import { addLine, applyCartChanges, sanitizeLines, setQuantity, type CartLine } from "./logic";
 
 type CartState = {
   lines: CartLine[];
@@ -13,6 +13,7 @@ type CartState = {
   setQuantity: (variantId: string, quantity: number) => void;
   remove: (variantId: string) => void;
   clear: () => void;
+  applyChanges: (changes: Parameters<typeof applyCartChanges>[1]) => void;
   open: () => void;
   close: () => void;
 };
@@ -32,6 +33,7 @@ export const useCart = create<CartState>()(
         set((s) => ({ lines: setQuantity(s.lines, variantId, quantity) })),
       remove: (variantId) => set((s) => ({ lines: setQuantity(s.lines, variantId, 0) })),
       clear: () => set({ lines: [] }),
+      applyChanges: (changes) => set((s) => ({ lines: applyCartChanges(s.lines, changes) })),
       open: () => set({ isOpen: true }),
       close: () => set({ isOpen: false }),
     }),

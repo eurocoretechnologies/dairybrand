@@ -72,3 +72,19 @@ export function sanitizeLines(value: unknown): CartLine[] {
     return [];
   });
 }
+
+/** Applies price updates and removes unavailable lines, as reported by the server. */
+export function applyCartChanges(
+  lines: CartLine[],
+  changes: (
+    | { variantId: string; kind: "price"; pricePaise: number }
+    | { variantId: string; kind: "unavailable" }
+  )[],
+): CartLine[] {
+  return lines.flatMap((line) => {
+    const change = changes.find((c) => c.variantId === line.variantId);
+    if (!change) return [line];
+    if (change.kind === "unavailable") return [];
+    return [{ ...line, pricePaise: change.pricePaise }];
+  });
+}
